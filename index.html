@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Zé Agrotóxico: O Jogo de Luta</title>
@@ -84,10 +85,13 @@
             text-align: center;
         }
 
+        /* AJUSTE CSS PARA AS IMAGENS NO JOGO */
+
         .player img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: top center;
             border-radius: 8px;
             border: 2px solid #fff;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -153,10 +157,13 @@
             transform: scale(1.03);
         }
 
+        /* AJUSTE CSS PARA AS IMAGENS NA SELEÇÃO */
+
         .card img {
             width: 100%;
             height: 110px;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: top center;
             border-radius: 5px;
             margin-bottom: 8px;
         }
@@ -244,15 +251,17 @@
     <div id="tela-selecao">
 
         <div id="modo">
+
             <label>
                 <input type="radio" name="modoJogo" value="P2" checked onclick="mudarModo('P2')">
-                👥 2 Jogadores
+                👥 2 Jogadores (Console / Mesmo Teclado)
             </label>
 
             <label>
                 <input type="radio" name="modoJogo" value="CPU" onclick="mudarModo('CPU')">
-                🤖 Contra o Computador
+                🤖 Contra o Computador (IA)
             </label>
+
         </div>
 
         <h2>
@@ -265,6 +274,7 @@
         <button class="btn-jogar" onclick="iniciarJogo()">
             Entrar na Arena ⚔️
         </button>
+
     </div>
 
     <div id="arena">
@@ -293,27 +303,29 @@
 
     <div id="controles">
 
-        <h3>📜 MANUAL DE COMANDOS:</h3>
+        <h3>📜 MANUAL DE COMANDOS (Mortal Kombat Style):</h3>
 
-        <strong>🕹️ JOGADOR 1:</strong>
+        <strong>🕹️ JOGADOR 1 (Esquerda):</strong>
         Andar: <kbd>A</kbd> / <kbd>D</kbd> |
         Pulo: <kbd>W</kbd> |
         Soco: <kbd>J</kbd> |
         Chute: <kbd>K</kbd> |
-        SUPER: <kbd>I</kbd>
+        💥 SUPER PODER: <kbd>I</kbd>
 
         <br><br>
 
-        <strong>🕹️ JOGADOR 2:</strong>
+        <strong>🕹️ JOGADOR 2 / IA (Direita):</strong>
         Andar: <kbd>⬅️</kbd> / <kbd>➡️</kbd> |
         Pulo: <kbd>⬆️</kbd> |
         Soco: <kbd>1</kbd> |
         Chute: <kbd>2</kbd> |
-        SUPER: <kbd>5</kbd>
+        💥 SUPER PODER: <kbd>5</kbd>
 
     </div>
 
 <script>
+
+// Lista vinculando os personagens aos caminhos das imagens
 
 const listaPersonagens = [
 
@@ -337,8 +349,62 @@ const listaPersonagens = [
 
     {
         nome: "Agricultor",
-        poder: "Machado",
+        poder: "Machado (Imune a Gás)",
         img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (3).jpeg"
+    },
+
+    {
+        nome: "Fazendeiro",
+        poder: "Foice Ninja",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (4).jpeg"
+    },
+
+    {
+        nome: "Colmeia",
+        poder: "Espirro de Mel",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (5).jpeg"
+    },
+
+    {
+        nome: "Florares",
+        poder: "Encanto Imobilizador",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (6).jpeg"
+    },
+
+    {
+        nome: "Firme",
+        poder: "Força Gigante",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (7).jpeg"
+    },
+
+    {
+        nome: "Chuva Ácida",
+        poder: "Ácido Ninja",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (8).jpeg"
+    },
+
+    {
+        nome: "Guardião da Selva",
+        poder: "Raízes de Faca",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (9).jpeg"
+    },
+
+    {
+        nome: "Carvão Tetravalente",
+        poder: "4 Braços Robô",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (10).jpeg"
+    },
+
+    {
+        nome: "Glicosado",
+        poder: "Golpe Tontiante",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (11).jpeg"
+    },
+
+    {
+        nome: "Cipermetrina",
+        poder: "Mosquito Paralisante",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (12).jpeg"
     }
 
 ];
@@ -377,8 +443,10 @@ function renderSelecao() {
         grid.innerHTML += `
             <div class="${classe}" onclick="selecionar(${idx})">
 
-                <img src="${p.img}"
-                onerror="this.src='https://via.placeholder.com/150?text=${p.nome}'">
+                <img
+                    src="${p.img}"
+                    onerror="this.src='https://via.placeholder.com/150?text=${p.nome}'"
+                >
 
                 <strong>${p.nome}</strong>
 
@@ -432,7 +500,7 @@ window.addEventListener('keydown', (e) => {
         return;
     }
 
-    // MOVIMENTO P1
+    // MOVIMENTO
 
     if(e.key === 'a' || e.key === 'A') {
 
@@ -447,8 +515,6 @@ window.addEventListener('keydown', (e) => {
             pos1 += 25;
         }
     }
-
-    // MOVIMENTO P2
 
     if(e.key === 'ArrowLeft') {
 
@@ -597,22 +663,22 @@ function iniciarJogo() {
 
             if(v1 === v2) {
 
-                alert("⏱️ EMPATE!");
+                alert("⏱️ FIM DO TEMPO: EMPATE!");
 
             } else if(v1 > v2) {
 
                 alert(
-                    "🏆 " +
+                    "🏆 FIM DE JOGO: " +
                     listaPersonagens[p1Sel].nome +
-                    " venceu!"
+                    " GANHOU O COMBATE!"
                 );
 
             } else {
 
                 alert(
-                    "🏆 " +
+                    "🏆 FIM DE JOGO: " +
                     listaPersonagens[p2Sel].nome +
-                    " venceu!"
+                    " GANHOU O COMBATE!"
                 );
             }
 
@@ -643,3 +709,6 @@ renderSelecao();
 
 </body>
 </html>
+           
+
+       

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Zé Agrotóxico: O Jogo de Luta</title>
+
+    <style>
+        body {
+            background: #0c0f12;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2ecc71;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            color: #bdc3c7;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        #arena {
+            width: 900px;
+            height: 450px;
+            background: #1e272e;
+            border: 5px solid #34495e;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        .barra-vida {
+            width: 300px;
+            height: 25px;
+            background: #c0392b;
+            border: 2px solid #fff;
+            position: absolute;
+            top: 20px;
+            border-radius: 5px;
+        }
+
+        #vida1 {
+            left: 20px;
+        }
+
+        #vida2 {
+            right: 20px;
+        }
+
+        .progresso {
+            height: 100%;
+            background: #2ecc71;
+            width: 100%;
+            transition: width 0.1s ease;
+        }
+
+        #timer {
+            font-size: 50px;
+            font-weight: bold;
+            color: #f1c40f;
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .player {
+            width: 100px;
+            height: 160px;
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+        }
+
+        .player img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .player-nome {
+            position: absolute;
+            top: -25px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 0;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        #p1 {
+            left: 150px;
+        }
+
+        #p2 {
+            right: 150px;
+        }
+
+        #tela-selecao {
+            width: 950px;
+            margin: 0 auto;
+            background: #1a1f25;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2c3e50;
+        }
+
+        #modo {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        #modo label {
+            margin: 0 15px;
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #2c3e50;
+            padding: 10px;
+            border: 3px solid #34495e;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .card strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 3px;
+            color: #ecf0f1;
+        }
+
+        .card small {
+            color: #bdc3c7;
+            font-size: 11px;
+            display: block;
+            height: 25px;
+            overflow: hidden;
+        }
+
+        .card.p1-sel {
+            border-color: #3498db;
+            background: #1f4068;
+            box-shadow: 0 0 15px #3498db;
+        }
+
+        .card.p2-sel {
+            border-color: #e74c3c;
+            background: #4b1212;
+            box-shadow: 0 0 15px #e74c3c;
+        }
+
+        #controles {
+            margin-top: 25px;
+            background: #161a1d;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #34495e;
+            display: inline-block;
+            text-align: left;
+            max-width: 800px;
+        }
+
+        #controles h3 {
+            margin-top: 0;
+            color: #f1c40f;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 5px;
+        }
+
+        .btn-jogar {
+            background: #2ecc71;
+            color: #fff;
+            padding: 15px 50px;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 25px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(46,204,113,0.4);
+            transition: background 0.2s;
+        }
+
+        .btn-jogar:hover {
+            background: #27ae60;
+        }
+
+        kbd {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-family: sans-serif;
+            box-shadow: 0 2px 0 #bdc3c7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Zé Agrotóxico: Combate Químico</h1>
+
+    <div id="tela-selecao">
+
+        <div id="modo">
+            <label>
+                <input type="radio" name="modoJogo" value="P2" checked onclick="mudarModo('P2')">
+                👥 2 Jogadores
+            </label>
+
+            <label>
+                <input type="radio" name="modoJogo" value="CPU" onclick="mudarModo('CPU')">
+                🤖 Contra o Computador
+            </label>
+        </div>
+
+        <h2>
+            Jogador 1: Use as setas do teclado para navegar |
+            Jogador 2: Use o Mouse para clicar e escolher
+        </h2>
+
+        <div class="grid" id="grid-personagens"></div>
+
+        <button class="btn-jogar" onclick="iniciarJogo()">
+            Entrar na Arena ⚔️
+        </button>
+    </div>
+
+    <div id="arena">
+
+        <div id="timer">60</div>
+
+        <div class="barra-vida" id="vida1">
+            <div class="progresso" id="barra1"></div>
+        </div>
+
+        <div class="barra-vida" id="vida2">
+            <div class="progresso" id="barra2"></div>
+        </div>
+
+        <div id="p1" class="player">
+            <div class="player-nome" id="nome-p1">P1</div>
+            <img id="img-p1" src="" alt="P1">
+        </div>
+
+        <div id="p2" class="player">
+            <div class="player-nome" id="nome-p2">P2</div>
+            <img id="img-p2" src="" alt="P2">
+        </div>
+
+    </div>
+
+    <div id="controles">
+
+        <h3>📜 MANUAL DE COMANDOS:</h3>
+
+        <strong>🕹️ JOGADOR 1:</strong>
+        Andar: <kbd>A</kbd> / <kbd>D</kbd> |
+        Pulo: <kbd>W</kbd> |
+        Soco: <kbd>J</kbd> |
+        Chute: <kbd>K</kbd> |
+        SUPER: <kbd>I</kbd>
+
+        <br><br>
+
+        <strong>🕹️ JOGADOR 2:</strong>
+        Andar: <kbd>⬅️</kbd> / <kbd>➡️</kbd> |
+        Pulo: <kbd>⬆️</kbd> |
+        Soco: <kbd>1</kbd> |
+        Chute: <kbd>2</kbd> |
+        SUPER: <kbd>5</kbd>
+
+    </div>
+
+<script>
+
+const listaPersonagens = [
+
+    {
+        nome: "Benzênico",
+        poder: "Gás Aromático",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34.jpeg"
+    },
+
+    {
+        nome: "Insectus",
+        poder: "Garras e Voo",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (1).jpeg"
+    },
+
+    {
+        nome: "Fungor",
+        poder: "Pó Cegante",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (2).jpeg"
+    },
+
+    {
+        nome: "Agricultor",
+        poder: "Machado",
+        img: "personagens/WhatsApp Image 2026-05-24 at 16.14.34 (3).jpeg"
+    }
+
+];
+
+let p1Sel = 0;
+let p2Sel = 1;
+let modo = 'P2';
+
+let jogoRodando = false;
+let tempo = 60;
+
+let v1 = 100;
+let v2 = 100;
+
+let pos1 = 150;
+let pos2 = 650;
+
+function renderSelecao() {
+
+    const grid = document.getElementById('grid-personagens');
+
+    grid.innerHTML = '';
+
+    listaPersonagens.forEach((p, idx) => {
+
+        let classe = 'card';
+
+        if(idx === p1Sel) {
+            classe += ' p1-sel';
+        }
+
+        if(idx === p2Sel) {
+            classe += ' p2-sel';
+        }
+
+        grid.innerHTML += `
+            <div class="${classe}" onclick="selecionar(${idx})">
+
+                <img src="${p.img}"
+                onerror="this.src='https://via.placeholder.com/150?text=${p.nome}'">
+
+                <strong>${p.nome}</strong>
+
+                <small>${p.poder}</small>
+
+            </div>
+        `;
+    });
+}
+
+function selecionar(idx) {
+
+    p2Sel = idx;
+    renderSelecao();
+}
+
+function mudarModo(m) {
+
+    modo = m;
+
+    if(modo === 'CPU') {
+
+        p2Sel = Math.floor(Math.random() * listaPersonagens.length);
+    }
+
+    renderSelecao();
+}
+
+window.addEventListener('keydown', (e) => {
+
+    if(!jogoRodando) {
+
+        if(e.key === 'ArrowLeft') {
+
+            p1Sel = (p1Sel > 0)
+                ? p1Sel - 1
+                : listaPersonagens.length - 1;
+
+            renderSelecao();
+        }
+
+        if(e.key === 'ArrowRight') {
+
+            p1Sel = (p1Sel < listaPersonagens.length - 1)
+                ? p1Sel + 1
+                : 0;
+
+            renderSelecao();
+        }
+
+        return;
+    }
+
+    // MOVIMENTO P1
+
+    if(e.key === 'a' || e.key === 'A') {
+
+        if(pos1 > 20) {
+            pos1 -= 25;
+        }
+    }
+
+    if(e.key === 'd' || e.key === 'D') {
+
+        if(pos1 < pos2 - 90) {
+            pos1 += 25;
+        }
+    }
+
+    // MOVIMENTO P2
+
+    if(e.key === 'ArrowLeft') {
+
+        if(pos2 > pos1 + 90) {
+            pos2 -= 25;
+        }
+    }
+
+    if(e.key === 'ArrowRight') {
+
+        if(pos2 < 780) {
+            pos2 += 25;
+        }
+    }
+
+    // ATAQUES P1
+
+    if(
+        e.key === 'j' ||
+        e.key === 'J' ||
+        e.key === 'k' ||
+        e.key === 'K'
+    ) {
+
+        if(Math.abs(pos1 - pos2) < 110) {
+
+            v2 -= 6;
+        }
+    }
+
+    if(e.key === 'i' || e.key === 'I') {
+
+        if(Math.abs(pos1 - pos2) < 250) {
+
+            v2 -= 14;
+        }
+
+        alert(
+            "💥 " +
+            listaPersonagens[p1Sel].nome +
+            " usou SUPER PODER: " +
+            listaPersonagens[p1Sel].poder +
+            "!"
+        );
+    }
+
+    // ATAQUES P2
+
+    if(modo === 'P2') {
+
+        if(e.key === '1' || e.key === '2') {
+
+            if(Math.abs(pos1 - pos2) < 110) {
+
+                v1 -= 6;
+            }
+        }
+
+        if(e.key === '5') {
+
+            if(Math.abs(pos1 - pos2) < 250) {
+
+                v1 -= 14;
+            }
+
+            alert(
+                "💥 " +
+                listaPersonagens[p2Sel].nome +
+                " usou SUPER PODER: " +
+                listaPersonagens[p2Sel].poder +
+                "!"
+            );
+        }
+    }
+
+    atualizarMundo();
+});
+
+function iniciarJogo() {
+
+    document.getElementById('tela-selecao').style.display = 'none';
+
+    document.getElementById('arena').style.display = 'block';
+
+    document.getElementById('nome-p1').innerText =
+        listaPersonagens[p1Sel].nome;
+
+    document.getElementById('img-p1').src =
+        listaPersonagens[p1Sel].img;
+
+    document.getElementById('nome-p2').innerText =
+        listaPersonagens[p2Sel].nome;
+
+    document.getElementById('img-p2').src =
+        listaPersonagens[p2Sel].img;
+
+    jogoRodando = true;
+
+    tempo = 60;
+
+    v1 = 100;
+    v2 = 100;
+
+    pos1 = 150;
+    pos2 = 650;
+
+    atualizarMundo();
+
+    let cronometro = setInterval(() => {
+
+        if(!jogoRodando) {
+
+            clearInterval(cronometro);
+            return;
+        }
+
+        tempo--;
+
+        document.getElementById('timer').innerText = tempo;
+
+        // IA
+
+        if(modo === 'CPU' && jogoRodando) {
+
+            if(pos2 > pos1 + 95) {
+
+                pos2 -= 15;
+
+            } else {
+
+                v1 -= 4;
+            }
+        }
+
+        atualizarMundo();
+
+        if(
+            tempo <= 0 ||
+            v1 <= 0 ||
+            v2 <= 0
+        ) {
+
+            jogoRodando = false;
+
+            clearInterval(cronometro);
+
+            if(v1 === v2) {
+
+                alert("⏱️ EMPATE!");
+
+            } else if(v1 > v2) {
+
+                alert(
+                    "🏆 " +
+                    listaPersonagens[p1Sel].nome +
+                    " venceu!"
+                );
+
+            } else {
+
+                alert(
+                    "🏆 " +
+                    listaPersonagens[p2Sel].nome +
+                    " venceu!"
+                );
+            }
+
+            location.reload();
+        }
+
+    }, 1000);
+}
+
+function atualizarMundo() {
+
+    document.getElementById('p1').style.left =
+        pos1 + 'px';
+
+    document.getElementById('p2').style.left =
+        pos2 + 'px';
+
+    document.getElementById('barra1').style.width =
+        (v1 < 0 ? 0 : v1) + '%';
+
+    document.getElementById('barra2').style.width =
+        (v2 < 0 ? 0 : v2) + '%';
+}
+
+renderSelecao();
+
+</script>
+
+</body>
+</html>
